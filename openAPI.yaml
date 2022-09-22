@@ -1,0 +1,167 @@
+openapi: 3.0.0
+
+info: 
+    title: Technovium Unlimited API version 1.0.0
+    description: TU API version to connect to Unity3D of any other client
+    version: 0.1.0
+
+servers:
+    - url: 'http://localhost:5000/api/v1'
+
+paths:
+    /users:
+        post:
+            summary: add user
+            description: This allows you to create user
+            operationId: addUser
+            requestBody:
+                description: user add to system
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/User'
+                        
+            responses:
+                '201':
+                    description: craated
+        get:
+            summary: get all users
+            description: Gets all Users
+            operationId: getUsers
+            requestBody:
+                description: get all users
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/Users'   
+            responses:
+                '201':
+                    description: craated
+    /users/{id}:
+        put:
+            summary: updateUser
+            description: This allows you to create user
+            operationId: updateUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/User'
+            requestBody:
+                description: user add to system
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/User'
+                        
+            responses:
+                '204':
+                    description: updated
+        get:
+            summary: get only one user
+            description: Get onlyone user
+            operationId: getOneUser
+            # gave me error with {id} https://oai.github.io/Documentation/specification-parameters.html
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/User'
+            requestBody:
+                description: get only one user
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/User'   
+            responses:
+                '201':
+                    description: craated
+
+    /games:
+        get:
+            summary: get all games
+            description: get all games
+            operationId: getGames
+            requestBody:
+                description: get all games
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/Games'
+            responses:
+                '200':
+                    description: recieved
+
+    
+components:
+    schemas:
+        Users:
+            type: array
+            items:
+                $ref: '#/components/schemas/User'
+        User:
+           type: object
+           required:
+               - id
+               - username
+               - email
+               - password
+               - date_of_birth
+               - gender
+           properties:
+                id:
+                    type: string
+                username:
+                    type: string
+                email:
+                    type: string
+                password:
+                    type: string
+                date_of_birth:
+                    type: string 
+                gender:
+                    type: string
+                status:
+                    type: string
+                    enum: 
+                        - Live
+                        - Deleted
+        Games:       
+            type: object
+            required:
+                - id
+                - name
+                - created
+                - created_by
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                created:
+                    type: string
+                created_by:
+                    type: string
+        Levels:
+            type: object
+            required: 
+                - id
+                - game_id
+                - level
+                - created
+                - created_by
+            properties:
+                id:
+                    type: string
+                game_id:
+                    type: string
+                level:
+                    type: integer
+                created:
+                    type: string 
+                created_by:
+                    type: string
+
+
