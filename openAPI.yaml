@@ -1,5 +1,6 @@
 openapi: 3.0.0
-
+# some good links to learn
+# https://shashankvivek-7.medium.com/go-swagger-user-authentication-securing-api-using-jwt-part-2-c80fdc1a020a
 info: 
     title: Technovium Unlimited API version 1.0.0
     description: TU API version to connect to Unity3D of any other client
