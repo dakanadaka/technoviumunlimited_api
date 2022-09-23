@@ -196,7 +196,7 @@ paths:
             responses:
                 '201':
                     description: created
-    users/game/level/{level_id}/success:
+    /users/game/level/{level_id}/success:
         post:
             summary: add achievement of the user -> see the schema of game and level -> game_id and level_id
             description: add achievement of the user -> see the schema of game and level -> game_id and level_id
@@ -218,7 +218,7 @@ paths:
             responses:
                 '201':
                     description: score created
-    users/game/level/{level_id}/started:
+    /users/game/level/{level_id}/started:
         post:
             summary: Log started level
             description: Log started level of the user -> see the schema of game and level -> game_id and level_id. Every time user starts a level we add new record. We want to log all actions ot that user to see in how much time user finished the level.
