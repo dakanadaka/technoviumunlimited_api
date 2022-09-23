@@ -172,10 +172,10 @@ paths:
             responses:
                 '200':
                     description: recieved
-    /users/game/achievements/{user_id}:
+    /users/game/score/{user_id}:
         get:
-            summary: Get all achievements of the user
-            description: Get all achievements of the use 
+            summary: Get all scores of the user
+            description: Get all scores of the use 
             operationId: getAllAchievements
             security:
                 - Bearer: []
@@ -187,7 +187,7 @@ paths:
                   schema:
                         $ref: '#/components/schemas/Achievement'
             requestBody:
-                description: get all achievements of the use
+                description: get all scores of the use
                 content:
                     'application/json':
                         schema:
@@ -196,6 +196,7 @@ paths:
             responses:
                 '201':
                     description: created
+    users/game/level/{level_id}/success:
         post:
             summary: add achievement of the user -> see the schema of game and level -> game_id and level_id
             description: add achievement of the user -> see the schema of game and level -> game_id and level_id
@@ -203,20 +204,42 @@ paths:
             security:
                 - Bearer: []
             parameters:
-                - name: user_id
+                - name: level_id
                   in: path
                   required: true
                   schema:
-                        $ref: '#/components/schemas/Achievement'
+                        $ref: '#/components/schemas/Score'
             requestBody:
                 description: post add achievement of the user
                 content:
                     'application/json':
                         schema:
-                            $ref: '#/components/schemas/UserLocation'   
+                            $ref: '#/components/schemas/Score'   
             responses:
-                '200':
-                    description: recieved
+                '201':
+                    description: score created
+    users/game/level/{level_id}/started:
+        post:
+            summary: Log started level
+            description: Log started level of the user -> see the schema of game and level -> game_id and level_id. Every time user starts a level we add new record. We want to log all actions ot that user to see in how much time user finished the level.
+            operationId: addStartedLevelOfUser
+            security:
+                - Bearer: []
+            parameters:
+                - name: level_id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/Score'
+            requestBody:
+                description: post add achievement of the user
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/Score'   
+            responses:
+                '201':
+                    description: score updated to started
     /games:
         get:
             summary: Get all games
@@ -342,18 +365,18 @@ components:
                     type: string 
                 created:
                     type: string
-        Achievements:
+        Scores:
             type: array
             items:
-                $ref: '#/components/schemas/Achievement'
-        Achievement:
+                $ref: '#/components/schemas/Score'
+        Score:
            type: object
            required:
                - id
                - user_id
                - game_id
                - level_id
-               - score
+               - status
                - created
            properties:
                 id:
@@ -364,8 +387,11 @@ components:
                     type: string
                 level_id:
                     type: string
-                score: #maybe not needed
+                status: #success, started
                     type: string 
+                    enum: 
+                        - success
+                        - started
                 created:
                     type: string
         Games:
