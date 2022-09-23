@@ -8,25 +8,14 @@ info:
 servers:
     - url: 'http://localhost:5000/api/v1'
 
+security:
+  - bearerAuth: []
+
 paths:
     /users:
-        post:
-            summary: add user
-            description: This allows you to create user
-            operationId: addUser
-            requestBody:
-                description: user add to system
-                content:
-                    'application/json':
-                        schema:
-                            $ref: '#/components/schemas/User'
-                        
-            responses:
-                '201':
-                    description: craated
         get:
-            summary: get all users
-            description: Gets all Users
+            summary: Get all users
+            description: Get all users of the game
             operationId: getUsers
             requestBody:
                 description: get all users
@@ -35,32 +24,12 @@ paths:
                         schema:
                             $ref: '#/components/schemas/Users'   
             responses:
-                '201':
-                    description: craated
+                '200':
+                    description: get  
     /users/{id}:
-        put:
-            summary: updateUser
-            description: This allows you to create user
-            operationId: updateUser
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                        $ref: '#/components/schemas/User'
-            requestBody:
-                description: user add to system
-                content:
-                    'application/json':
-                        schema:
-                            $ref: '#/components/schemas/User'
-                        
-            responses:
-                '204':
-                    description: updated
         get:
-            summary: get only one user
-            description: Get onlyone user
+            summary: Get user with {user_id}
+            description: Get user with parameter of {user_id}
             operationId: getOneUser
             # gave me error with {id} https://oai.github.io/Documentation/specification-parameters.html
             parameters:
@@ -76,13 +45,182 @@ paths:
                         schema:
                             $ref: '#/components/schemas/User'   
             responses:
+                '200':
+                    description: user results
+    /users/signup:
+        post:
+            summary: Signup user
+            description: Signup for new account
+            operationId: signUpUser
+            requestBody:
+                description: Add user to database
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/User'   
+            responses:
                 '201':
-                    description: craated
-
+                    description: User Created
+    /users/login: #add JWT security
+        post:
+            summary: Loggin User
+            description: Returns token for authorized User
+            operationId: LogginUser
+            requestBody:
+                description: Loggin user
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/User'   
+            responses:
+                '200':
+                    description: LoggedIn
+    /users/resetpassword: #add JWT security
+        post:
+            summary: Reset password
+            description: With this request you can send a link to email to reset password
+            operationId: ResetPassword
+            security:
+                - Bearer: []
+            requestBody:
+                description: With this request you can send a link to email to reset password
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/User'   
+            responses:
+                '201':
+                    description: email with an resetlink has been sennt to the user email address
+    /users/settings: #add JWT security
+        put:
+            summary: User settings (email, pass etc.)
+            description: You can update all settings of the user
+            operationId: Settings
+            security:
+                - Bearer: []
+            requestBody:
+                description: You can update all settings of the user
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/User'   
+            responses:
+                204:
+                    description: User Updated
+                400:
+                    description: Bad Request
+                404:
+                    description: Item Not Found
+                500:
+                    description: Server error
+        get:
+            summary: Get user settings
+            description: Get user settings
+            operationId: getUserSettings
+            security:
+                - Bearer: []
+            requestBody:
+                description: get user settings
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/User'   
+            responses:
+                '200':
+                    description: user settings recieved 
+    /users/game/latestLocation/{user_id}:
+        post:
+            summary: Add latest user location
+            description: This allows to add latest location of the user 
+            operationId: addLatestUserLocation
+            security:
+                - Bearer: []
+            parameters:
+                - name: user_id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/UserLocation'
+            requestBody:
+                description: This allows to add latest location of the user
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/UserLocation'
+                        
+            responses:
+                '201':
+                    description: created
+        get:
+            summary: Get user latest game location
+            description: Get user latest game location
+            operationId: getUserGameLocation
+            security:
+                - Bearer: []
+            parameters:
+                - name: user_id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/UserLocation'
+            requestBody:
+                description: get user location
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/UserLocation'   
+            responses:
+                '200':
+                    description: recieved
+    /users/game/achievements/{user_id}:
+        get:
+            summary: Get all achievements of the user
+            description: Get all achievements of the use 
+            operationId: getAllAchievements
+            security:
+                - Bearer: []
+            # gave me error with {id} https://oai.github.io/Documentation/specification-parameters.html
+            parameters:
+                - name: user_id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/Achievement'
+            requestBody:
+                description: get all achievements of the use
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/Achievement'
+                        
+            responses:
+                '201':
+                    description: created
+        post:
+            summary: add achievement of the user -> see the schema of game and level -> game_id and level_id
+            description: add achievement of the user -> see the schema of game and level -> game_id and level_id
+            operationId: postAchievementOfUser
+            security:
+                - Bearer: []
+            parameters:
+                - name: user_id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/Achievement'
+            requestBody:
+                description: post add achievement of the user
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/UserLocation'   
+            responses:
+                '200':
+                    description: recieved
     /games:
         get:
-            summary: get all games
-            description: get all games
+            summary: Get all games
+            description: Get all games
             operationId: getGames
             requestBody:
                 description: get all games
@@ -93,7 +231,60 @@ paths:
             responses:
                 '200':
                     description: recieved
-
+    /games/{id}:
+        get:
+            summary: Get all games
+            description: Get all games
+            operationId: getGames
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/Game'
+            requestBody:
+                description: Get all games
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/Game'
+            responses:
+                '200':
+                    description: recieved 
+    /levels:
+        get:
+            summary: Get all levels of the game
+            description: Get all levels of the game
+            operationId: getAllLevelsOfGame
+            requestBody:
+                description: Get all levels of one game
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/Levels'
+            responses:
+                '200':
+                    description: recieved
+    /levels/{game_id}:
+        get:
+            summary: Get all levels of the game
+            description: Get all levels of the game
+            operationId: getAllLevelsOfGame
+            parameters:
+                - name: game_id
+                  in: path
+                  required: true
+                  schema:
+                        $ref: '#/components/schemas/Level'
+            requestBody:
+                description: Get all levels of one game
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/Level'
+            responses:
+                '200':
+                    description: recieved
     
 components:
     schemas:
@@ -128,11 +319,66 @@ components:
                     enum: 
                         - Live
                         - Deleted
-        Games:       
+        UserLocation:
+           type: object
+           required:
+               - id
+               - user_id
+               - game_id
+               - level_id
+               - location_coordination #maybe not neded
+               - created
+
+           properties:
+                id:
+                    type: string
+                user_id:
+                    type: string
+                game_id:
+                    type: string
+                level_id:
+                    type: string
+                location_coordination: #maybe not needed
+                    type: string 
+                created:
+                    type: string
+        Achievements:
+            type: array
+            items:
+                $ref: '#/components/schemas/Achievement'
+        Achievement:
+           type: object
+           required:
+               - id
+               - user_id
+               - game_id
+               - level_id
+               - score
+               - created
+           properties:
+                id:
+                    type: string
+                user_id:
+                    type: string
+                game_id:
+                    type: string
+                level_id:
+                    type: string
+                score: #maybe not needed
+                    type: string 
+                created:
+                    type: string
+        Games:
+            type: array
+            items:
+                $ref: '#/components/schemas/Game'
+        Game:       
             type: object
             required:
                 - id
                 - name
+                - description
+                - category
                 - created
                 - created_by
             properties:
@@ -140,11 +386,17 @@ components:
                     type: string
                 name:
                     type: string
+                category:
+                    type: string
                 created:
                     type: string
                 created_by:
                     type: string
         Levels:
+            type: array
+            items:
+                $ref: '#/components/schemas/Level'   
+        Level:
             type: object
             required: 
                 - id
@@ -164,4 +416,8 @@ components:
                 created_by:
                     type: string
 
-
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
